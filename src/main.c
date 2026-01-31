@@ -105,7 +105,7 @@ int main(void) {
 
   printf("╔════════════════════════════════════════════════════════╗\n");
   printf("║                                                        ║\n");
-  printf("║          Welcome to AES Encryption Tool               ║\n");
+  printf("║          Welcome to AES Encryption Tool                ║\n");
   printf("║                                                        ║\n");
   printf("╚════════════════════════════════════════════════════════╝\n");
 
@@ -115,7 +115,7 @@ int main(void) {
     if (scanf("%d", &choice) != 1) {
       while (getchar() != '\n')
         ; // Limpiar buffer
-      printf("\n⚠ Invalid input. Please enter a number.\n");
+      printf("\n Invalid input. Please enter a number.\n");
       continue;
     }
     while (getchar() != '\n')
@@ -131,27 +131,27 @@ int main(void) {
     case 1:
       key_size = AES_KEY_SIZE_128;
       key_len = 16;
-      printf("\n✓ AES-128 selected (16-byte key)\n");
+      printf("\n AES-128 selected (16-byte key)\n");
       break;
     case 2:
       key_size = AES_KEY_SIZE_192;
       key_len = 24;
-      printf("\n✓ AES-192 selected (24-byte key)\n");
+      printf("\n AES-192 selected (24-byte key)\n");
       break;
     case 3:
       key_size = AES_KEY_SIZE_256;
       key_len = 32;
-      printf("\n✓ AES-256 selected (32-byte key)\n");
+      printf("\n AES-256 selected (32-byte key)\n");
       break;
     default:
-      printf("\n⚠ Invalid choice. Please try again.\n");
+      printf("\n Invalid choice. Please try again.\n");
       continue;
     }
 
     // Obtener la clave
     printf("\nEnter encryption key (%zu characters): ", key_len);
     if (fgets(input, sizeof(input), stdin) == NULL) {
-      printf("\n⚠ Error reading key.\n");
+      printf("\n Error reading key.\n");
       continue;
     }
 
@@ -159,7 +159,7 @@ int main(void) {
     input[strcspn(input, "\n")] = 0;
 
     if (strlen(input) != key_len) {
-      printf("\n⚠ Key must be exactly %zu characters. Got %zu characters.\n",
+      printf("\n Key must be exactly %zu characters. Got %zu characters.\n",
              key_len, strlen(input));
       continue;
     }
@@ -174,7 +174,7 @@ int main(void) {
       if (scanf("%d", &operation) != 1) {
         while (getchar() != '\n')
           ;
-        printf("\n⚠ Invalid input.\n");
+        printf("\n Invalid input.\n");
         continue;
       }
       while (getchar() != '\n')
@@ -188,7 +188,7 @@ int main(void) {
         // ENCRIPTAR
         printf("\nEnter message to encrypt: ");
         if (fgets(input, sizeof(input), stdin) == NULL) {
-          printf("\n⚠ Error reading message.\n");
+          printf("\n Error reading message.\n");
           continue;
         }
 
@@ -196,7 +196,7 @@ int main(void) {
         size_t msg_len = strlen(input);
 
         if (msg_len == 0) {
-          printf("\n⚠ Message cannot be empty.\n");
+          printf("\n Message cannot be empty.\n");
           continue;
         }
 
@@ -205,7 +205,7 @@ int main(void) {
         // Aplicar padding
         size_t padded_len = apply_padding(plaintext, msg_len, MAX_INPUT_SIZE);
         if (padded_len == 0) {
-          printf("\n⚠ Message too long.\n");
+          printf("\n Message too long.\n");
           continue;
         }
 
@@ -216,18 +216,18 @@ int main(void) {
         print_hex("Plaintext (with padding)", plaintext, padded_len);
 
         // Encriptar bloque por bloque
-        printf("\n🔒 Encrypting...\n");
+        printf("\n Encrypting...\n");
         for (size_t i = 0; i < padded_len; i += AES_BLOCK_SIZE) {
           aes_error_t err =
               aes_encrypt(plaintext + i, ciphertext + i, key, key_size);
 
           if (err != AES_SUCCESS) {
-            printf("\n⚠ Encryption error: %s\n", aes_error_to_string(err));
+            printf("\n Encryption error: %s\n", aes_error_to_string(err));
             goto operation_end;
           }
         }
 
-        printf("✓ Encryption successful!\n\n");
+        printf(" Encryption successful!\n\n");
         print_hex("Ciphertext", ciphertext, padded_len);
 
       } else if (operation == 2) {
@@ -236,7 +236,7 @@ int main(void) {
 
         if (ciphertext[0] == 0 && ciphertext[1] == 0) {
           printf(
-              "\n⚠ No ciphertext available. Please encrypt a message first.\n");
+              "\n No ciphertext available. Please encrypt a message first.\n");
           continue;
         }
 
@@ -244,13 +244,13 @@ int main(void) {
             ((strlen(input) / AES_BLOCK_SIZE) + 1) * AES_BLOCK_SIZE;
 
         // Desencriptar bloque por bloque
-        printf("\n🔓 Decrypting...\n");
+        printf("\n Decrypting...\n");
         for (size_t i = 0; i < cipher_len; i += AES_BLOCK_SIZE) {
           aes_error_t err =
               aes_decrypt(ciphertext + i, decrypted + i, key, key_size);
 
           if (err != AES_SUCCESS) {
-            printf("\n⚠ Decryption error: %s\n", aes_error_to_string(err));
+            printf("\n Decryption error: %s\n", aes_error_to_string(err));
             goto operation_end;
           }
         }
@@ -258,13 +258,13 @@ int main(void) {
         // Remover padding
         size_t decrypted_len = remove_padding(decrypted, cipher_len);
 
-        printf("✓ Decryption successful!\n\n");
+        printf(" Decryption successful!\n\n");
         print_hex("Decrypted (with padding)", decrypted, cipher_len);
         print_hex("Decrypted (no padding)", decrypted, decrypted_len);
         print_string("Decrypted message", decrypted, decrypted_len);
 
       } else {
-        printf("\n⚠ Invalid operation.\n");
+        printf("\n Invalid operation.\n");
       }
 
     operation_end:
